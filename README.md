@@ -63,7 +63,7 @@ Point your IPTV app at:
 ```
 Playlist: https://<domain>/playlist.m3u   (Basic auth: user/pass)
 EPG:      https://<domain>/epg.xml
-Local:    http://<pi-ip>:3000/playlist.m3u
+LAN (no TLS): http://<pi-ip>:8081/playlist.m3u   (via Caddy http block)
 ```
 
 ## Auth
@@ -82,20 +82,20 @@ your Pi's IP could read your lineup.
 ## Reverse proxy / TLS (Caddy)
 
 Edit `config/Caddyfile` and replace `iptv.example.com` with your real domain. On a
-bare Pi (no public domain yet), change the `http://localhost:8081` block to bind to
-the Pi's LAN IP instead:
-`http://<pi-lan-ip>:8081 { reverse_proxy api:3000 }`
+bare Pi (no public domain yet), bind the `http://<pi-lan-ip>:8081` block to the Pi's
+LAN IP so internal clients can reach the playlist:
+`http://192.168.1.10:8081 { reverse_proxy api:3000 }`
 
 Keep `:1935` (RTMP) and `:8080` (HLS) bound to the LAN only; do **not** expose them
-to the internet.
+to the internet. The API itself binds to localhost-only and is only reachable via Caddy.
 
 ## Monitoring (Uptime Kuma)
 
 After `docker compose up`, open `http://<pi-ip>:3001`, set up a dashboard, and add
 HTTP monitors for:
-- `http://localhost:3000/health` (API up)
-- `http://localhost:3000/playlist.m3u` (auth endpoint)
-- `http://localhost:80/hls/main-live.m3u8` (stream up)
+- `http://localhost:8081/health` (API up, via proxy)
+- `http://localhost:8081/playlist.m3u` (auth endpoint, via proxy)
+- `http://localhost:8080/hls/main-live.m3u8` (stream up)
 
 ## Ingest
 

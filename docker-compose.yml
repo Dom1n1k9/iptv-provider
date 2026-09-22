@@ -14,16 +14,18 @@ services:
     environment:
       - TZ=Europe/Paris
 
-  # EPG (Electronic Program Guide) parser -> XMLTV
+  # EPG (Electronic Program Guide) grabber -> XMLTV
   epg:
-    image: ghcr.io/albertodvp/iptv-epg-grabber
+    image: ghcr.io/iptv-org/epg
     container_name: epg
     restart: unless-stopped
     volumes:
-      - ./config/epg/epg-sources.yml:/app/config.yml:ro
+      - ./config/epg:/config:ro
+      - epg-data:/output
     environment:
       - TZ=Europe/Paris
-    command: --flush-cache --output /app/guide.xml
+    # Generates guide.xml into the same volume the API serves from
+    command: --config /config/epg-sources.yml --output /output/guide.xml
     depends_on:
       - iptv
 

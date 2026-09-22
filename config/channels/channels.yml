@@ -5,11 +5,12 @@ channels:
   - id: "main-live"
     name: "Main Live"
     logo: "/logo/main.png"
-    url: "http://iptv:8080/hls/main-live.m3u8"   # from your RTMP ingest
+    # Replace <pi-ip> with your Pi's LAN IP (clients reach it from outside Docker)
+    url: "http://<pi-ip>:8080/hls/main-live.m3u8"
     group: "Live"
 
   - id: "sports-1"
     name: "Sports 1"
     logo: "/logo/sports.png"
-    url: "http://iptv:8080/hls/sports.m3u8"
+    url: "http://<pi-ip>:8080/hls/sports.m3u8"
     group: "Sports"
