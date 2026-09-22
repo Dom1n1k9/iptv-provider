@@ -10,7 +10,7 @@ interface Channel {
   id: string;
   name: string;
   logo: string;
-  url: string;
+  path: string;
   group: string;
 }
 
@@ -22,6 +22,11 @@ function loadChannels(): Channel[] {
   const raw = fs.readFileSync(CHANNELS_FILE, "utf8");
   const parsed = yaml.parse(raw) as ChannelFile;
   return parsed.channels;
+}
+
+function streamUrl(channel: Channel): string {
+  const base = (process.env.STREAM_BASE_URL ?? "http://localhost:8080").replace(/\/+$/, "");
+  return `${base}${channel.path.startsWith("/") ? channel.path : `/${channel.path}`}`;
 }
 
 const AUTH_USERS = new Map<string, string>(); // user -> pass
@@ -50,7 +55,7 @@ app.get("/playlist.m3u", basicAuth, (req: Request, res: Response) => {
   let out = "#EXTM3U\n";
   for (const c of channels) {
     out += `#EXTINF:-1 tvg-id="${c.id}" tvg-logo="${c.logo}" group-title="${c.group}",${c.name}\n`;
-    out += `${c.url}\n`;
+    out += `${streamUrl(c)}\n`;
   }
   res.type("audio/x-mpegurl").send(out);
 });
@@ -63,7 +68,9 @@ app.get("/epg.xml", basicAuth, (req: Request, res: Response) => {
   res.type("application/xml").sendFile(EPG_FILE);
 });
 
-app.get("/channels", basicAuth, (req: Request, res: Response) => res.json(loadChannels()));
+app.get("/channels", basicAuth, (req: Request, res: Response) =>
+  res.json(loadChannels().map((c) => ({ ...c, url: streamUrl(c) }))),
+);
 
 app.get("/health", (req: Request, res: Response) => res.json({ status: "ok" }));
 

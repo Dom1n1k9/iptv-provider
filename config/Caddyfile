@@ -1,28 +1,21 @@
-# Expose HTTPS (80/443). Needs a real domain that resolves to your Pi.
+# Public HTTPS endpoint (set STREAM_BASE_URL=https://iptv.example.com in .env)
 https://iptv.example.com {
-    # Generate M3U using this host so external clients resolve correctly
+    # API: M3U / EPG / channels / health
     @api {
         host iptv.example.com
         path /playlist.m3u /epg.xml /channels /health
     }
     handle @api {
         reverse_proxy api:3000
-
-        # Rewrite internal iptv:<port> HLS URLs to the public hostname
-        @playlist operator {
-            method GET
-            path /playlist.m3u
-        }
-        response @playlist body replace "http://iptv:8080" "https://iptv.example.com"
     }
 
-    # Pass through HLS on the same public domain
+    # HLS stream segments on the same public domain
     handle /hls/* {
         reverse_proxy iptv:80
     }
 }
 
-# Local LAN fallback on HTTP for internal clients
+# LAN fallback for clients without the public domain
 http://<pi-lan-ip>:8081 {
     reverse_proxy api:3000
 }

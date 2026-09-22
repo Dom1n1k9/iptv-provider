@@ -5,12 +5,12 @@ channels:
   - id: "main-live"
     name: "Main Live"
     logo: "/logo/main.png"
-    # Replace <pi-ip> with your Pi's LAN IP (clients reach it from outside Docker)
-    url: "http://<pi-ip>:8080/hls/main-live.m3u8"
+    # API prefixes the STREAM_BASE_URL (set in .env) to this HLS path
+    path: "/hls/main-live.m3u8"
     group: "Live"
 
   - id: "sports-1"
     name: "Sports 1"
     logo: "/logo/sports.png"
-    url: "http://<pi-ip>:8080/hls/sports.m3u8"
+    path: "/hls/sports.m3u8"
     group: "Sports"

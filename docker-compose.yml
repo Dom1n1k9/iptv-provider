@@ -43,6 +43,9 @@ services:
       - TZ=Europe/Paris
       - PLAYLIST_USER=${PLAYLIST_USER:-admin}
       - PLAYLIST_PASS=${PLAYLIST_PASS:-changeme}
+      # Public base URL baked into the generated playlist.
+      # LAN-only: http://<pi-ip>:8080    |  With Caddy/TLS: https://iptv.example.com
+      - STREAM_BASE_URL=${STREAM_BASE_URL:-http://localhost:8080}
     depends_on:
       - epg
 

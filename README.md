@@ -73,6 +73,9 @@ The playlist/EPG endpoints are protected with **HTTP Basic auth**. Configure in 
 ```env
 PLAYLIST_USER=admin
 PLAYLIST_PASS=you-should-change-me
+# Public base URL baked into stream links in the M3U
+# LAN-only: http://<pi-ip>:8080    |  With Caddy/TLS: https://iptv.example.com
+STREAM_BASE_URL=http://<pi-ip>:8080
 ```
 
 IPTV apps (TiviMate, Smarters, etc.) let you enter a username/password — those
@@ -108,7 +111,7 @@ available to clients as `http://<pi-ip>:8080/hls/main-live.m3u8`.
 
 ## Configuration
 
-- `config/channels/channels.yml` — lineup (turns into M3U)
+- `config/channels/channels.yml` — lineup (HLS path per channel; API prefixes `STREAM_BASE_URL`)
 - `config/epg/epg-sources.yml` — where the EPG grabber pulls from
 - `config/nginx.conf` — RTMP/HLS/transcode behavior
 - `config/Caddyfile` — reverse proxy / TLS rules
