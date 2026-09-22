@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  # Live TV / transcode / proxy server (RPi 5-friendly)
+  iptv:
+    image: danielkucera/nginx-rtmp
+    container_name: iptv
+    restart: unless-stopped
+    ports:
+      - "1935:1935"   # RTMP ingest
+      - "8080:80"     # HTTP / HLS / stat page
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    environment:
+      - TZ=Europe/Paris
+
+  # EPG (Electronic Program Guide) parser -> XMLTV
+  epg:
+    image: ghcr.io/albertodvp/iptv-epg-grabber
+    container_name: epg
+    restart: unless-stopped
+    volumes:
+      - ./config/epg/epg-sources.yml:/app/config.yml:ro
+    environment:
+      - TZ=Europe/Paris
+    command: --flush-cache --output /app/guide.xml
+    depends_on:
+      - iptv
+
+  # API - generates M3U + XMLTV and serves playlist to clients
+  api:
+    build: ./api
+    container_name: iptv-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/channels:/app/config/channels:ro
+      - epg-data:/app/data
+    environment:
+      - TZ=Europe/Paris
+    depends_on:
+      - epg
+
+volumes:
+  epg-data:

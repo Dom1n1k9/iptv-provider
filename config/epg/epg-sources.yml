@@ -1,0 +1,6 @@
+# XMLTV/EPG sources. The epg-grabber fetches these and normalizes
+# them into guide.xml, which the API exposes at /epg.xml.
+# Fill with real grabber sites metadata (see epg-grabber docs).
+sites:
+  - name: "example"
+    url: "https://example.com/guide.xml"

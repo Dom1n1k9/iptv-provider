@@ -1,0 +1,15 @@
+# Your channel lineup.
+# The API turns this file into the M3U playlist served at /playlist.m3u
+
+channels:
+  - id: "main-live"
+    name: "Main Live"
+    logo: "/logo/main.png"
+    url: "http://iptv:8080/hls/main-live.m3u8"   # from your RTMP ingest
+    group: "Live"
+
+  - id: "sports-1"
+    name: "Sports 1"
+    logo: "/logo/sports.png"
+    url: "http://iptv:8080/hls/sports.m3u8"
+    group: "Sports"

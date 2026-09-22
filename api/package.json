@@ -1,0 +1,18 @@
+{
+  "name": "iptv-provider-api",
+  "version": "1.0.0",
+  "description": "Mini API generating M3U playlist + XMLTV EPG for your self-hosted IPTV",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Dom1n1k9",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "yaml": "^2.4.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
