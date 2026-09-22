@@ -1,0 +1,21 @@
+# Expose HTTPS (80/443). Your Pi firewall must have Caddy configured
+# to reach only the API internally.
+https://iptv.example.com {
+    @api {
+        host iptv.example.com
+        path /playlist.m3u /epg.xml /channels /health
+    }
+    handle @api {
+        reverse_proxy api:3000
+    }
+
+    # Pass through HLS/RTMP handled by nginx-rtmp if needed
+    handle /hls/* {
+        reverse_proxy iptv:80
+    }
+}
+
+# Local LAN fallback on HTTP for internal clients
+http://localhost:8081 {
+    reverse_proxy api:3000
+}
