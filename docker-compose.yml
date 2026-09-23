@@ -28,8 +28,6 @@ services:
       - TZ=Europe/Paris
       - RUN_AT_STARTUP=true      # grab guide on container start
       - CRON_SCHEDULE=0 0 * * *  # refresh daily
-    depends_on:
-      - iptv
 
   # API - generates M3U + XMLTV and serves playlist to clients (TS)
   api:

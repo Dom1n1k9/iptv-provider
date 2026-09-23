@@ -1,21 +1,26 @@
-# Public HTTPS endpoint (set STREAM_BASE_URL=https://iptv.example.com in .env)
-https://iptv.example.com {
-    # API: M3U / EPG / channels / health
-    @api {
-        host iptv.example.com
-        path /playlist.m3u /epg.xml /channels /health
-    }
-    handle @api {
-        reverse_proxy api:3000
-    }
+# ── Public HTTPS endpoint (optional) ─────────────────────────────────────────
+# Only needed if you have a public domain/subdomain pointing at your Pi.
+# To enable: uncomment the block below and replace iptv.example.com with your
+# real domain (e.g. tv.example.com). Caddy will get a Let's Encrypt cert.
+# Leave it commented out for LAN-only use.
+#
+# https://iptv.example.com {
+#     @api {
+#         host iptv.example.com
+#         path /playlist.m3u /epg.xml /channels /health
+#     }
+#     handle @api {
+#         reverse_proxy api:3000
+#     }
+#     # HLS stream segments on the same public domain
+#     handle /hls/* {
+#         reverse_proxy iptv:80
+#     }
+# }
 
-    # HLS stream segments on the same public domain
-    handle /hls/* {
-        reverse_proxy iptv:80
-    }
-}
-
-# LAN fallback for clients without the public domain
-http://<pi-lan-ip>:8081 {
+# ── LAN endpoint (default, no TLS) ───────────────────────────────────────────
+# Listens on all interfaces, port 8081. The API behind it requires Basic auth,
+# so this is safe to leave open on your LAN.
+http://:8081 {
     reverse_proxy api:3000
 }

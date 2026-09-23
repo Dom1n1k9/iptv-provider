@@ -58,13 +58,15 @@ cp .env.example .env && nano .env        # set PLAYLIST_USER/PASS first
 docker compose up -d --build
 ```
 
-Point your IPTV app at:
+Point your IPTV app at (LAN-only by default):
 
 ```
-Playlist: https://<domain>/playlist.m3u   (Basic auth: user/pass)
-EPG:      https://<domain>/epg.xml
-LAN (no TLS): http://<pi-ip>:8081/playlist.m3u   (via Caddy http block)
+Playlist: http://<pi-ip>:8081/playlist.m3u
+EPG:      http://<pi-ip>:8081/epg.xml
 ```
+
+(To publish publicly, enable the HTTPS block in `config/Caddyfile` and set
+`STREAM_BASE_URL=https://<domain>` in `.env` — then use `https://<domain>/playlist.m3u`.)
 
 ## Auth
 
@@ -84,10 +86,19 @@ your Pi's IP could read your lineup.
 
 ## Reverse proxy / TLS (Caddy)
 
-Edit `config/Caddyfile` and replace `iptv.example.com` with your real domain. On a
-bare Pi (no public domain yet), bind the `http://<pi-lan-ip>:8081` block to the Pi's
-LAN IP so internal clients can reach the playlist:
-`http://192.168.1.10:8081 { reverse_proxy api:3000 }`
+Edit `config/Caddyfile`. By default it runs **LAN-only** with no TLS:
+
+```
+Playlist (LAN): http://<pi-ip>:8081/playlist.m3u
+EPG (LAN):      http://<pi-ip>:8081/epg.xml
+```
+
+The API behind it requires Basic auth, so leaving `:8081` on the LAN is fine.
+
+To publish over the internet with TLS, **uncomment the `https://iptv.example.com`
+block** in `config/Caddyfile` and replace `iptv.example.com` with your real domain
+(which must already resolve to your Pi). Caddy will then fetch a Let's Encrypt cert
+automatically and also serve `/hls/*` on the same public host.
 
 Keep `:1935` (RTMP) and `:8080` (HLS) bound to the LAN only; do **not** expose them
 to the internet. The API itself binds to localhost-only and is only reachable via Caddy.
@@ -95,10 +106,12 @@ to the internet. The API itself binds to localhost-only and is only reachable vi
 ## Monitoring (Uptime Kuma)
 
 After `docker compose up`, open `http://<pi-ip>:3001`, set up a dashboard, and add
-HTTP monitors for:
-- `http://localhost:8081/health` (API up, via proxy)
-- `http://localhost:8081/playlist.m3u` (auth endpoint, via proxy)
-- `http://localhost:8080/hls/main-live.m3u8` (stream up)
+HTTP monitors. Since Kuma runs in its own container, use Docker **service names**,
+not `localhost`:
+
+- `http://api:3000/health`   (API up)
+- `http://api:3000/playlist.m3u`  (expects 401 without auth = good)
+- `http://iptv:80/hls/main-live.m3u8`  (stream up)
 
 ## Ingest
 
