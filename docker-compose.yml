@@ -12,7 +12,7 @@ services:
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
     environment:
-      - TZ=Europe/Paris
+      - TZ=${TZ:-Europe/Paris}
 
   # EPG (Electronic Program Guide) server -> XMLTV served as /guide.xml on :3000
   # See https://github.com/iptv-org/epg (Docker section) for env vars.
@@ -25,7 +25,7 @@ services:
     volumes:
       - ./config/epg/channels.xml:/epg/public/channels.xml:ro
     environment:
-      - TZ=Europe/Paris
+      - TZ=${TZ:-Europe/Paris}
       - RUN_AT_STARTUP=true      # grab guide on container start
       - CRON_SCHEDULE=0 0 * * *  # refresh daily
 
@@ -39,7 +39,7 @@ services:
     volumes:
       - ./config/channels:/app/config/channels:ro
     environment:
-      - TZ=Europe/Paris
+      - TZ=${TZ:-Europe/Paris}
       - PLAYLIST_USER=${PLAYLIST_USER:-admin}
       - PLAYLIST_PASS=${PLAYLIST_PASS:-changeme}
       # Public base URL baked into the generated playlist.

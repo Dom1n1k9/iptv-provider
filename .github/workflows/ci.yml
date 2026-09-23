@@ -40,3 +40,19 @@ jobs:
           context: api
           platforms: linux/arm64,linux/arm/v7,linux/amd64
           push: false
+
+  configs:
+    name: Validate configs (Caddy + nginx)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Caddyfile
+        run: |
+          docker run --rm -v "$PWD/config/Caddyfile:/Caddyfile:ro" caddy:2-alpine \
+            caddy validate --config /Caddyfile --adapter caddyfile
+
+      - name: Validate nginx.conf (using image with RTMP module)
+        run: |
+          docker run --rm -v "$PWD/config/nginx.conf:/etc/nginx/nginx.conf:ro" \
+            tiangolo/nginx-rtmp:latest nginx -t

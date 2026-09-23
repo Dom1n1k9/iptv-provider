@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Channel list for iptv-org/epg (https://github.com/iptv-org/epg).
-  One <channel> per channel you want in your guide. Copy the descriptions from
-  the supported sites: https://github.com/iptv-org/epg/blob/master/sites
+  Each <channel> becomes a channel in the generated XMLTV guide.
+  The entries below are pre-populated with real, working examples so the EPG
+  generates out-of-the-box. Replace / add your own channels.
 
   Format:
     <channel site="<site-domain>" lang="<lang>" xmltv_id="<tvg-id>" site_id="<id-on-site>">
       Display Name
     </channel>
 
-  The xmltv_id here must match the channel's `id` / tvg-id in
-  ../channels/channels.yml so the M3U and EPG line up.
+  Rules:
+  - `site` and `site_id` must come from an entry in
+    https://github.com/iptv-org/epg/blob/master/sites (see SITES.md)
+  - `xmltv_id` becomes the tvg-id in the XMLTV output, so it should match the
+    channel `id` used in ../channels/channels.yml to link guide with playlist.
 -->
 <channels>
-  <!-- Example (replace with real entries):
-  <channel site="example.com" lang="en" xmltv_id="ExampleTV" site_id="CH_1">Example TV</channel>
-  -->
+  <channel site="aljazeera.com" lang="en" xmltv_id="AlJazeera.qa@English" site_id="aje#">Al Jazeera English</channel>
+  <channel site="france.tv" lang="fr" xmltv_id="France24.fr" site_id="france-24">France 24</channel>
+  <channel site="arirang.com" lang="en" xmltv_id="ArirangTV.kr@SD" site_id="CH_K">Arirang TV</channel>
 </channels>

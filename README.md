@@ -58,6 +58,8 @@ cp .env.example .env && nano .env        # set PLAYLIST_USER/PASS first
 docker compose up -d --build
 ```
 
+To update the stack later, just run `./deploy.sh` (pulls latest, rebuilds, restarts).
+
 Point your IPTV app at (LAN-only by default):
 
 ```
