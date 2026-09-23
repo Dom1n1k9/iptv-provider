@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Channel list for iptv-org/epg (https://github.com/iptv-org/epg).
+  One <channel> per channel you want in your guide. Copy the descriptions from
+  the supported sites: https://github.com/iptv-org/epg/blob/master/sites
+
+  Format:
+    <channel site="<site-domain>" lang="<lang>" xmltv_id="<tvg-id>" site_id="<id-on-site>">
+      Display Name
+    </channel>
+
+  The xmltv_id here must match the channel's `id` / tvg-id in
+  ../channels/channels.yml so the M3U and EPG line up.
+-->
+<channels>
+  <!-- Example (replace with real entries):
+  <channel site="example.com" lang="en" xmltv_id="ExampleTV" site_id="CH_1">Example TV</channel>
+  -->
+</channels>

@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 
 const CHANNELS_FILE = path.join(__dirname, "..", "config", "channels", "channels.yml");
-const EPG_FILE = path.join("/app/data", "guide.xml");
+const EPG_UPSTREAM = process.env.EPG_UPSTREAM ?? "http://localhost:3002";
 
 interface Channel {
   id: string;
@@ -60,12 +60,18 @@ app.get("/playlist.m3u", basicAuth, (req: Request, res: Response) => {
   res.type("audio/x-mpegurl").send(out);
 });
 
-app.get("/epg.xml", basicAuth, (req: Request, res: Response) => {
-  if (!fs.existsSync(EPG_FILE)) {
-    res.status(404).send("EPG not generated yet");
-    return;
+app.get("/epg.xml", basicAuth, async (req: Request, res: Response) => {
+  try {
+    const upstream = await fetch(`${EPG_UPSTREAM}/guide.xml`);
+    if (!upstream.ok) {
+      res.status(upstream.status).send("EPG not ready yet");
+      return;
+    }
+    const xml = await upstream.text();
+    res.type("application/xml").send(xml);
+  } catch (err) {
+    res.status(502).send("EPG service unreachable");
   }
-  res.type("application/xml").sendFile(EPG_FILE);
 });
 
 app.get("/channels", basicAuth, (req: Request, res: Response) =>

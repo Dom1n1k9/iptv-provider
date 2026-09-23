@@ -38,7 +38,7 @@ Designed to run on a Raspberry Pi 5 (Raspberry Pi OS Lite 64-bit).
 | Service     | Port | Purpose |
 |-------------|------|---------|
 | `iptv`      | `1935` (RTMP) / `8080` (HTTP-HLS) | Ingest + HLS serving |
-| `epg`       | -    | Pulls XMLTV from sources |
+| `epg`       | `127.0.0.1:3002` | iptv-org/epg XMLTV server (`/guide.xml`) |
 | `api`       | `127.0.0.1:3000` | **TS API** `/playlist.m3u`, `/epg.xml`, `/channels` (auth) |
 | `proxy`     | `80`, `443` | Caddy TLS reverse proxy (recommended) |
 | `uptime-kuma` | `3001` | Monitoring/status page |
@@ -112,10 +112,10 @@ available to clients as `http://<pi-ip>:8080/hls/main-live.m3u8`.
 ## Configuration
 
 - `config/channels/channels.yml` — lineup (HLS path per channel; API prefixes `STREAM_BASE_URL`)
-- `config/epg/epg-sources.yml` — where the EPG grabber pulls from
+- `config/epg/channels.xml` — the channel list fed to iptv-org/epg; builds the guide
 - `config/nginx.conf` — RTMP/HLS/transcode behavior
 - `config/Caddyfile` — reverse proxy / TLS rules
-- `api/src/index.ts` — TS M3U/XMLTV generation + auth
+- `api/src/index.ts` — TS M3U/XMLTV generation + auth (proxies EPG from the epg service)
 
 ## Development
 

@@ -1,7 +1,0 @@
-# XMLTV/EPG sources. The iptv-org/epg grabber fetches these and writes
-# them into the shared epg-data volume as guide.xml, which the API
-# exposes at /epg.xml.
-# See https://github.com/iptv-org/epg for the supported site format.
-sites:
-  - name: "example"
-    url: "https://example.com/guide.xml"
